@@ -57,7 +57,7 @@ public class GenricMethod {
 	}
 	
 	
-	
+//////////////////////////////////Launching Application/////////////////////////////////////////////////////////	
 	
 	public void launchApplication() {
 
@@ -97,6 +97,9 @@ public class GenricMethod {
 		driver.get(appUrl);
 	}
 	
+
+	
+	////////////////Using Genric Explicit wait//////////////////////////////////
 	
 	public WebElement waitForExpectedElement(By by) {
 
@@ -105,7 +108,7 @@ public class GenricMethod {
 
 	}
 	
-	
+	/////////////////////////////Handling Exception//////////////////////////////////////////
 	private static void handleException(Exception e, By locator, String action) {
 
 	    String screenshotPath = takeScreenShot(action + "_" + locator);
@@ -123,6 +126,8 @@ public class GenricMethod {
 
 
 
+	////////////////////////Clicking Element////////////////////////////////////////
+	
 	public void clickOnElement(By by) {
 
 	    WebElement ele = null;
@@ -167,13 +172,7 @@ public class GenricMethod {
 
 
 
-	public void ClickByAction(By by) {
-
-		Actions a = new Actions(driver);
-
-		a.moveToElement(waitForExpectedElement(by)).click();
-
-	}
+/////////////////////////////Sendkeys Method//////////////////////////////////////////////////
 
 	public void clearAndEnterText(By by, String value) {
 
@@ -223,7 +222,7 @@ public class GenricMethod {
 	    }
 	}
 
-
+///////////////////////////////GetData For TextComparision/////////////////////////////////////////////
 	public void getDataWithTextComparison(By by, String expectedValue) {
 
 	    try {
@@ -249,7 +248,7 @@ public class GenricMethod {
 	    }
 	}
 
-
+///////////////////////////////Get Text Normal//////////////////////////////////////
 	public void getTextNormal(By by, String value) {
 
 		WebElement ele = waitForExpectedElement(by);
@@ -265,7 +264,13 @@ public class GenricMethod {
 		return ele.getText();
 
 	}
+	public String getTextnormalWithretun1(By by) {
 
+		WebElement ele = waitForExpectedElement(by);
+
+		return ele.getText();
+
+	}
 	
 	
 	public void ReadDataFromList(List<WebElement> list, By by, String expectedValue) {
