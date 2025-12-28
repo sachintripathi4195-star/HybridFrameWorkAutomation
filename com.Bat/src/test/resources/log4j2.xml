@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                pattern="%d{dd-MM-yyyy HH:mm:ss} [%t] %-5level %c - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <!-- Disable TestNG logs -->
+        <Logger name="org.testng" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Disable Selenium internal logs -->
+        <Logger name="org.openqa.selenium" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Disable WebDriverManager logs -->
+        <Logger name="io.github.bonigarcia" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Your framework logs -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+</Configuration>
