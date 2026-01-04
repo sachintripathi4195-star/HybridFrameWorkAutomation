@@ -140,7 +140,7 @@ public class GenricMethod {
 	        return;
 	    }
 
-	    // 1️⃣ Normal Selenium click
+	    
 	    try {
 	        ele.click();
 	        Log.info("Clicked (Normal) on element : " + by);
@@ -149,7 +149,7 @@ public class GenricMethod {
 	        Log.warn("Normal click failed on : " + by + " | Trying JS click");
 	    }
 
-	    // 2️⃣ JavaScript click (fallback)
+	   
 	    try {
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
 	        js.executeScript("arguments[0].click();", ele);
@@ -159,7 +159,7 @@ public class GenricMethod {
 	        Log.warn("JS click failed on : " + by + " | Trying Actions click");
 	    }
 
-	    // 3️⃣ Actions click (last fallback)
+	    
 	    try {
 	        Actions actions = new Actions(driver);
 	        actions.moveToElement(ele).click().perform();
