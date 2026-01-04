@@ -41,6 +41,8 @@ public class GenricMethod {
 	
 	SoftAssert soft = new SoftAssert();
 
+////////////////////////////////////Read Property File ////////////////////////////////////////	
+	
 	static {
 		try {
 
@@ -99,7 +101,7 @@ public class GenricMethod {
 	
 
 	
-	////////////////Using Genric Explicit wait//////////////////////////////////
+	///////////////////////////////Using Genric Explicit wait//////////////////////////////////
 	
 	public WebElement waitForExpectedElement(By by) {
 
@@ -223,6 +225,7 @@ public class GenricMethod {
 	}
 
 ///////////////////////////////GetData For TextComparision/////////////////////////////////////////////
+	
 	public void getDataWithTextComparison(By by, String expectedValue) {
 
 	    try {
@@ -257,6 +260,9 @@ public class GenricMethod {
 
 	}
 
+	
+	////////////////Get Text From Normal Return One/////////////////////////////////
+	
 	public String getTextnormalWithretun(By by) {
 
 		WebElement ele = waitForExpectedElement(by);
@@ -264,15 +270,9 @@ public class GenricMethod {
 		return ele.getText();
 
 	}
-	public String getTextnormalWithretun1(By by) {
 
-		WebElement ele = waitForExpectedElement(by);
-
-		return ele.getText();
-
-	}
 	
-	
+	////////////////////Read Data From List////////////////////////////////
 	public void ReadDataFromList(List<WebElement> list, By by, String expectedValue) {
 
 	    try {
@@ -307,7 +307,7 @@ public class GenricMethod {
 		
 		
 		
-		
+	///////////////////Read Row And Coloumn /////////////////////////////////////////////	
 	
 	public void ReadTableRowAndColoumn(List<WebElement> list, By by, String SideName) {
 
@@ -341,6 +341,9 @@ public class GenricMethod {
 
 	}
 
+	
+//////////////////////////////////////////Alert Method's/////////////////////////////////////////////	
+	
 	public void AlertMethod(String Type) {
 
 		Alert a = driver.switchTo().alert();
@@ -363,12 +366,14 @@ public class GenricMethod {
 
 	}
 
+	////////////////////////////////Swithcing frmae//////////////////////////
 	public void switchFrame(String id) {
 
 		driver.switchTo().frame(id);
 
 	}
 	
+ //////////////////////Take Screen shot///////////////////////////////////////	
 	public static String takeScreenShot(String ssName) {
 
 	    String projectPath = System.getProperty("user.dir");  
@@ -395,6 +400,7 @@ public class GenricMethod {
 	    return path;   
 	}
 
+/////////////////////////////////////////SwitchWindow////////////////////////////////////////	
 
 	public void switchToWindow(String title) {
 
