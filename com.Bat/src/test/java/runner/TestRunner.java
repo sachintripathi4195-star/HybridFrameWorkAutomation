@@ -8,10 +8,12 @@ import io.cucumber.testng.CucumberOptions;
         glue = {"stepdefination", "helperMethod"},
         plugin = {
                 "pretty",
-                "json:target/cucumber-json/cucumber.json"
+                "json:target/cucumber-json/cucumber.json" 
         },
         tags = "@smoke or @Reg",  
         monochrome = true
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
+	
+	
 }
