@@ -55,7 +55,10 @@ public class Hook extends GenricMethod{
 	
 	@AfterAll
 	public static void afterall() {
+		
 	    ExtentManager.getReporter().flush();
+	    
+	    
 	}
 
 	

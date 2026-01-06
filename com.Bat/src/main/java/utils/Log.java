@@ -41,4 +41,34 @@ public class Log {
             ExtentTestManager.getTest().log(Status.INFO, "[DEBUG] " + message);
         }
     }
+
+    /**
+     * Mark a step as passed both in the logger and the Extent report.
+     * Use this to make a successful assertion/step explicit in reports.
+     *
+     * @param message descriptive pass message
+     */
+    public static void pass(String message) {
+        log.info(message);
+
+        if (ExtentTestManager.getTest() != null) {
+            ExtentTestManager.getTest().log(Status.PASS, message);
+        }
+    }
+
+    /**
+     * Mark a step as failed both in the logger and the Extent report.
+     * Prefer calling this when a validation fails and you want a clear
+     * failure message in the report. This is similar to error(...) but
+     * provided as an explicit semantic helper.
+     *
+     * @param message descriptive failure message
+     */
+    public static void fail(String message) {
+        log.error(message);
+
+        if (ExtentTestManager.getTest() != null) {
+            ExtentTestManager.getTest().log(Status.FAIL, message);
+        }
+    }
 }
