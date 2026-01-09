@@ -25,6 +25,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
@@ -96,7 +97,8 @@ public class GenricMethod {
             WebDriverManager.chromedriver().setup();
             ChromeOptions chromeOpt = new ChromeOptions();
             chromeOpt.addArguments("--disable-incognito");
-            chromeOpt.addArguments("--disable-headless");
+            chromeOpt.addArguments("--headless");
+
             driver = new ChromeDriver(chromeOpt);
             break;
 
@@ -134,7 +136,7 @@ public class GenricMethod {
      * @return visible WebElement
      * @throws org.openqa.selenium.TimeoutException if element not visible within timeout
      */
-    public WebElement waitForExpectedElement(By by) {
+    public static WebElement waitForExpectedElement(By by) {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
@@ -169,6 +171,8 @@ public class GenricMethod {
 
 
     ////////////////////////Clicking Element////////////////////////////////////////
+
+  
 
     /**
      * Attempts to click on an element located by the given locator. This method
@@ -222,7 +226,7 @@ public class GenricMethod {
 
 
 
-/////////////////////////////Sendkeys Method//////////////////////////////////////////////////
+/////////////////////////////////////////Sendkeys Method/////////////////////////////////////////////////////
 
     /**
      * Clears any existing text and enters the provided value into the web
@@ -448,6 +452,7 @@ public class GenricMethod {
      *
      * @param Type one of: "accept", "dismiss", "text" (case-insensitive)
      */
+    
     public void AlertMethod(String Type) {
 
         Alert a = driver.switchTo().alert();
@@ -546,4 +551,65 @@ public class GenricMethod {
 
 
 
+
+	///////////////////////////////////////////Select DropDown By Value, Index, VisibleText//////////////////////////////////////
+    
+    /**
+	 * Selects an option from a dropdown located by `by` based on the method
+	 * specified in Application.properties under "SelectValue":
+	 * - "byValue": selects by option value attribute
+	 * - "byIndex": selects by option index (0-based)
+	 * - "byVisibleText": selects by visible text
+	 *
+	 * The corresponding value/index/text is read from properties:
+	 * - "Value" for byValue
+	 * - "Index" for byIndex
+	 * - "VisibleText" for byVisibleText
+	 *
+	 * @param by locator of the select element
+	 */    
+    
+    public static void selectDropdonwnByValue(By by,String type,String value) {
+    	
+    	Select s = new Select(waitForExpectedElement(by));
+    	
+    	switch (type.trim().toLowerCase()) {
+    	
+    	case "byValue":
+			 s.selectByValue(value.trim());
+			 break;
+    	case "byIndex":
+    		s.selectByIndex(Integer.parseInt(value));
+    		break;
+    	case "byVisibleText":
+    		s.selectByVisibleText(value.trim());
+			break;
+		}
+    	
+    	
+    }
+    
+    
+    public static void ReadAndClickDataFromList(By by,String ExpectedMasterOptions) {
+     
+    	List<WebElement> list = driver.findElements(by);
+    	
+    	for (WebElement ele : list) {
+			
+			String value = ele.getText().trim();
+			
+			if (value.equalsIgnoreCase(ExpectedMasterOptions)) {
+				
+				ele.click();
+				
+				Log.info("Clicked on Master Data Option From Dashboard Page");
+				
+				break;
+			}
+			
+		}
+    	
+    }
+    
+    
 }
