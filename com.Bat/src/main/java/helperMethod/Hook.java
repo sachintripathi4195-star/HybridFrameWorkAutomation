@@ -2,6 +2,7 @@ package helperMethod;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+
 import com.aventstack.extentreports.MediaEntityBuilder;
 
 import io.cucumber.java.After;

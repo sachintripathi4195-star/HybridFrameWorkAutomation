@@ -1,19 +1,16 @@
-@smoke
-Feature: Login to site
+@Reg
+Feature: Click Login button
 
-Background:
+ 
   
-    When navigate to application
-
-
-  Scenario: Launch URL and login
+  @Reg
+  Scenario: Verify Login button Is Working Or Not
    
+    
+    When navigate to application
     When user enters valid credentials
     Then user should be logged in successfully
- 
- 
- 
- 
- 
- 
- 
+
+
+    
+    

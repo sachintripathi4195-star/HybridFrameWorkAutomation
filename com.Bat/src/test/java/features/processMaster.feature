@@ -6,13 +6,17 @@ Feature: Click Master Data
     When user enters valid credentials
     Then user should be logged in successfully
     When Master Data Should be Displayed
+    
 
   @Reg
   Scenario: Verify Master Data Options
     And user click MasterData
     Then Process Master Should be displayed
-    
-    
-    
-    
-    
+
+  Scenario: Save Process Master Data
+     And user click MasterData
+    Then Process Master Should be displayed
+    Given user enter process Master Data
+    When user click on Save button
+   
+   
