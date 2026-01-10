@@ -5,7 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Daily at 10:00 AM IST (04:30 UTC)
     - cron: '30 4 * * *'
 
 jobs:
@@ -28,14 +27,14 @@ jobs:
 
       # Upload Cucumber reports as artifacts
       - name: Upload Cucumber Reports as Artifacts
-        uses: actions/upload-artifact@v2  # updated to v2
+        uses: actions/upload-artifact@v2  # Corrected version
         with:
           name: cucumber-reports
           path: target/cucumber-report-html/
 
       # Upload Cucumber JSON reports as artifacts
       - name: Upload Cucumber JSON Reports as Artifacts
-        uses: actions/upload-artifact@v2  # updated to v2
+        uses: actions/upload-artifact@v2  # Corrected version
         with:
           name: cucumber-json-reports
           path: target/cucumber-json/
