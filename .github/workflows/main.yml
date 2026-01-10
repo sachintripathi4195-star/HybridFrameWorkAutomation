@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-reports
-          path: com.Bat/target/cucumber-report-html/
+          path: com.Bat/target/cucumber-report-html/cucumber-html-reports/
 
       # Upload Cucumber JSON reports as artifacts
       - name: Upload Cucumber JSON Reports as Artifacts
