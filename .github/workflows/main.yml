@@ -3,9 +3,7 @@ name: Cucumber Automation CI
 on:
   push:
     branches: [main]
-
   workflow_dispatch:
-
   schedule:
     # Daily at 10:00 AM IST (04:30 UTC)
     - cron: '30 4 * * *'
@@ -28,15 +26,11 @@ jobs:
         working-directory: com.Bat
         run: mvn clean test -Dcucumber.filter.tags="@smoke or @Reg"
 
-      # Wait for a moment to ensure artifacts are fully generated
-      - name: Wait for Reports
-        run: sleep 10
-
       # Upload Cucumber reports as artifacts
       - name: Upload Cucumber HTML Reports as Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cucumber-reports-html
+          name: cucumber-reports
           path: target/cucumber-report-html/
 
       # Upload Cucumber JSON reports as artifacts
