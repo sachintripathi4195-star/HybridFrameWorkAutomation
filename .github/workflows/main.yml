@@ -27,15 +27,15 @@ jobs:
         run: mvn clean test -Dcucumber.filter.tags="@smoke or @Reg"
 
       # Upload Cucumber reports as artifacts
-      - name: Upload Cucumber HTML Reports as Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload Cucumber Reports as Artifacts
+        uses: actions/upload-artifact@v2  # updated to v2
         with:
           name: cucumber-reports
           path: target/cucumber-report-html/
 
       # Upload Cucumber JSON reports as artifacts
       - name: Upload Cucumber JSON Reports as Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2  # updated to v2
         with:
           name: cucumber-json-reports
           path: target/cucumber-json/
