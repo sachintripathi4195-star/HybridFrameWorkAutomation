@@ -22,9 +22,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Smoke + Regression Tests
-       working-directory: com.Bat
-       run: mvn clean install -Dcucumber.filter.tags="@smoke or @Reg"
-
+        working-directory: com.Bat
+        run: mvn clean install -Dcucumber.filter.tags="@smoke or @Reg"
 
       # Upload Cucumber reports as artifacts (paths point to the correct subfolder)
       - name: Upload Cucumber Reports as Artifacts
