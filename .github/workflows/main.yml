@@ -25,16 +25,16 @@ jobs:
         working-directory: com.Bat
         run: mvn clean test -Dcucumber.filter.tags="@smoke or @Reg"
 
-      # Upload Cucumber reports as artifacts
+      # Upload Cucumber reports as artifacts (paths point to com.Bat/target because tests run in that subfolder)
       - name: Upload Cucumber Reports as Artifacts
-        uses: actions/upload-artifact@v2  # Corrected version
+        uses: actions/upload-artifact@v4
         with:
           name: cucumber-reports
-          path: target/cucumber-report-html/
+          path: com.Bat/target/cucumber-report-html/
 
       # Upload Cucumber JSON reports as artifacts
       - name: Upload Cucumber JSON Reports as Artifacts
-        uses: actions/upload-artifact@v2  # Corrected version
+        uses: actions/upload-artifact@v4
         with:
           name: cucumber-json-reports
-          path: target/cucumber-json/
+          path: com.Bat/target/cucumber-json/
