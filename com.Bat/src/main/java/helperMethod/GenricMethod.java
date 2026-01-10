@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
+import org.openqa.selenium.Dimension; // added for headless window sizing
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import utils.ExtentTestManager;
@@ -91,15 +92,57 @@ public class GenricMethod {
         String browserName = prop.getProperty("Browser").trim().toLowerCase();
         String appUrl = prop.getProperty("url").trim();
 
+        // Read headless setting (default false)
+        String headlessProp = prop.getProperty("Headless", "false").trim().toLowerCase();
+        boolean headless = headlessProp.equals("true") || headlessProp.equals("yes");
+
         switch (browserName) {
 
         case "chrome":
             WebDriverManager.chromedriver().setup();
             ChromeOptions chromeOpt = new ChromeOptions();
             chromeOpt.addArguments("--disable-incognito");
-            chromeOpt.addArguments("--headless");
+            // Apply headless only when requested. Using setHeadless keeps compatibility
+            if (headless) {
+                // Use headless arguments compatible with multiple ChromeDriver/Selenium versions
+                chromeOpt.addArguments("--headless=new");
+                chromeOpt.addArguments("--headless");
+
+                // Ensure a fixed window size when running headless so elements that depend on layout
+                // are present and visible.
+                chromeOpt.addArguments("--window-size=1920,1080");
+
+                // Helpful flags for running in CI/headless environments
+                chromeOpt.addArguments("--no-sandbox");
+                chromeOpt.addArguments("--disable-gpu");
+                chromeOpt.addArguments("--disable-dev-shm-usage");
+                chromeOpt.addArguments("--remote-debugging-port=9222");
+                chromeOpt.addArguments("--disable-software-rasterizer");
+                // allow remote origins in case of ChromeDriver v111+ requiring this
+                chromeOpt.addArguments("--remote-allow-origins=*");
+            } else {
+                // Non-headless recommended flags
+                chromeOpt.addArguments("--remote-allow-origins=*");
+                chromeOpt.addArguments("--no-sandbox");
+                chromeOpt.addArguments("--disable-dev-shm-usage");
+            }
 
             driver = new ChromeDriver(chromeOpt);
+
+            // If headless, explicitly set the window size; otherwise maximize window
+            if (headless) {
+                try {
+                    driver.manage().window().setSize(new Dimension(1920, 1080));
+                } catch (Exception e) {
+                    Log.warn("Unable to explicitly set window size in headless mode: " + e.getMessage());
+                }
+            } else {
+                try {
+                    driver.manage().window().maximize();
+                } catch (Exception e) {
+                    Log.warn("Unable to maximize window: " + e.getMessage());
+                }
+            }
             break;
 
         case "firefox":
@@ -120,10 +163,25 @@ public class GenricMethod {
             throw new RuntimeException("Invalid Browser Name in properties file: " + browserName);
         }
 
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+        // Use a reasonable implicit wait. Explicit waits are preferred for specific elements.
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(90)); // Increased timeout
+        // Add a page load timeout to avoid hanging on heavy pages in headless mode
+        try {
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(120));
+        } catch (Exception e) {
+            Log.warn("pageLoadTimeout not supported by this driver: " + e.getMessage());
+        }
         driver.get(appUrl);
+        // Wait for the page to finish loading; useful to avoid timeouts in headless
+        try {
+            waitForPageToLoad();
+            // short pause to allow rendering of dynamic parts
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
+
 
 
     ///////////////////////////////Using Genric Explicit wait//////////////////////////////////
@@ -138,12 +196,26 @@ public class GenricMethod {
      */
     public static WebElement waitForExpectedElement(By by) {
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 
     }
 
-    ////////////////////////////Handling Exception//////////////////////////////////////////
+    /**
+     * Waits for the browser page's document.readyState to become 'complete'.
+     * This helps ensure scripts and resources are loaded before interactions,
+     * which is especially helpful in headless runs where timing differs.
+     */
+    public static void waitForPageToLoad() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+            wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+        } catch (Exception e) {
+            Log.warn("waitForPageToLoad encountered an issue: " + e.getMessage());
+        }
+    }
+
+    //////////////////////////Handling Exception//////////////////////////////////////////
 
     /**
      * Centralized exception handling used by other helper methods. Logs the
@@ -168,6 +240,7 @@ public class GenricMethod {
                     .addScreenCaptureFromPath(screenshotPath);
         }
     }
+
 
 
     ////////////////////////Clicking Element////////////////////////////////////////
@@ -570,30 +643,30 @@ public class GenricMethod {
 	 */    
     
     public static void selectDropdonwnByValue(By by,String type,String value) {
-    	
+    
     	Select s = new Select(waitForExpectedElement(by));
-    	
+    
     	switch (type.trim().toLowerCase()) {
-    	
+    
     	case "byValue":
-			 s.selectByValue(value.trim());
-			 break;
+		 s.selectByValue(value.trim());
+		 break;
     	case "byIndex":
-    		s.selectByIndex(Integer.parseInt(value));
-    		break;
+			s.selectByIndex(Integer.parseInt(value));
+			break;
     	case "byVisibleText":
-    		s.selectByVisibleText(value.trim());
+			s.selectByVisibleText(value.trim());
 			break;
 		}
-    	
-    	
+    
+    
     }
     
     
     public static void ReadAndClickDataFromList(By by,String ExpectedMasterOptions) {
      
     	List<WebElement> list = driver.findElements(by);
-    	
+     
     	for (WebElement ele : list) {
 			
 			String value = ele.getText().trim();
@@ -608,7 +681,7 @@ public class GenricMethod {
 			}
 			
 		}
-    	
+     	
     }
     
     

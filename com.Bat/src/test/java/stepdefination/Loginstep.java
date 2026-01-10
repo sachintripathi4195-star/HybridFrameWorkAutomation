@@ -26,7 +26,7 @@ public class Loginstep {
 			}
 
 	@Then("user should be logged in successfully")
-	public void userShouldBeLoggedInSuccessfully() {
+	public void userShouldBeLoggedInSuccessfully() throws InterruptedException {
 
 	lpage.ValidateuserLoggedinOrnot();
 	

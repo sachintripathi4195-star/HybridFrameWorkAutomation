@@ -44,9 +44,10 @@ public class LoginPage extends GenricMethod {
 	}
 	
 	By dashboardele = By.xpath("//ul[@class='main-menu active']/descendant::span");
-	public void ValidateuserLoggedinOrnot() {
+	public void ValidateuserLoggedinOrnot() throws InterruptedException {
 	
-
+    Thread.sleep(5000);	
+    
 	String dashboardText = waitForExpectedElement(dashboardele).getText(); 
 	System.out.println(dashboardText);
 	GenricMethod.takeScreenShot("dashboard ScreenShot");
