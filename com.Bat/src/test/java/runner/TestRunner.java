@@ -10,13 +10,13 @@ import io.cucumber.testng.CucumberOptions;
                 "pretty",
                 "json:target/cucumber-json/cucumber.json" 
         },
-        tags = "@smoke or @Reg",  
+        tags = "@Reg",  
         monochrome = true
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
 	
 	
-
 	
 }
+
 

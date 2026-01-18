@@ -56,6 +56,9 @@ public class GenricMethod {
     /** Properties loaded from src/test/resources/Application.properties. */
     public static Properties prop;
 
+    public static Properties process;
+    
+    
     /** SoftAssert instance for deferred assertions in helper methods if needed. */
     SoftAssert soft = new SoftAssert();
 
@@ -73,9 +76,24 @@ public class GenricMethod {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        try {
+        	
+        	
+        	FileInputStream file = new FileInputStream(
+					System.getProperty("user.dir") + "/src/test/resources/process.properties");
+
+			 process = new Properties();
+			process.load(file);
+        }catch(Exception e) {
+			e.printStackTrace();	
+        
+        
+        
+        
 
     }
-
+    }
 
     //////////////////////////////////Using Genric Explicit wait//////////////////////////////////
 
@@ -181,7 +199,6 @@ public class GenricMethod {
             Thread.currentThread().interrupt();
         }
     }
-
 
 
     ///////////////////////////////Using Genric Explicit wait//////////////////////////////////
@@ -622,7 +639,8 @@ public class GenricMethod {
 
     }
 
-
+//give me command for terminal where can convert to main project dir     
+    
 
 
 	///////////////////////////////////////////Select DropDown By Value, Index, VisibleText//////////////////////////////////////

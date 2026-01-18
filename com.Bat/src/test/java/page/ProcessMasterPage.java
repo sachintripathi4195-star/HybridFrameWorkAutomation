@@ -1,10 +1,13 @@
 package page;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import helperMethod.GenricMethod;
 import utils.Log; // add Log utility import
@@ -91,7 +94,7 @@ public class ProcessMasterPage extends GenricMethod {
 
 	}
 
-	By MasterOptionsForProcessMaster = By.xpath("//li[@class='slide has-sub open']//ul//a");
+	public By MasterOptionsForProcessMaster = By.xpath("//li[@class='slide has-sub open']//ul//a");
 
 	/**
 	 * Verify that the 'Process' option exists inside the Master menu options. Logs
@@ -150,6 +153,7 @@ public class ProcessMasterPage extends GenricMethod {
 	By ClickingCavitiesCheckbox = By.xpath("//input[@id='processcst']");
 	By ohpnotapplicablecheckbox = By.xpath("//input[@id='Prefix']");
 	By Mctonnage = By.xpath("//*[@id='Tonnage']");
+	By unitDropDown = By.xpath("//select[@id='uomDrop']");
 	By weightfactorDropdown = By.xpath("//select[@id='selectionWeight']");
 	By rmInputCheckboxAll = By.xpath("//input[@id='rmAll']");
 	By clickingBusinessSegmentFromDropdown = By
@@ -169,8 +173,7 @@ public class ProcessMasterPage extends GenricMethod {
 	By listOfUnitDropdownOptions = By.xpath("//ul[@id='select2-uomDrop-results']/li");
 
 	By WaitingForSupplierTableAfterSelectingBusinessSegment = By.xpath("//table[@id='rmSupplier']//label");
-	
-	
+
 	/**
 	 * Enter details for Process Master. Fills all fields using the available
 	 * locators. This maps to step: "Given user enter process Master Data"
@@ -200,12 +203,12 @@ public class ProcessMasterPage extends GenricMethod {
 			}
 
 			try {
-				
+
 				String unitToSelect = "Hrs.";
 
 				clickOnElement(clickingUnitDropdown);
-              clearAndEnterText(EnterSearchBoxInUnitDropdown, unitToSelect);
-				
+				clearAndEnterText(EnterSearchBoxInUnitDropdown, unitToSelect);
+
 				List<WebElement> unitOptions = driver.findElements(listOfUnitDropdownOptions);
 
 				for (WebElement option : unitOptions) {
@@ -420,15 +423,13 @@ public class ProcessMasterPage extends GenricMethod {
 		Log.info("[clickSaveButton] - Attempting to click Save button using SaveBtn locator: " + SaveBtn);
 
 		try {
-			
-			
-			if(waitForExpectedElement(WaitingForSupplierTableAfterSelectingBusinessSegment).isDisplayed()) {
+
+			if (waitForExpectedElement(WaitingForSupplierTableAfterSelectingBusinessSegment).isDisplayed()) {
 				Log.info("[clickSaveButton] - Save button is clickable.");
-			
-			clickOnElement(SaveBtn);
-			
-			}
-			else {
+
+				clickOnElement(SaveBtn);
+
+			} else {
 				Log.warn("Unable To Save Supplier Table is Not Displayed");
 			}
 			Log.pass("[clickSaveButton] - Save clicked (SaveBtn)");
@@ -446,9 +447,7 @@ public class ProcessMasterPage extends GenricMethod {
 	 * saved. Maps to: "And Process Master Data should be saved successfully" and
 	 * "Then toast message should be displayed \"...\""
 	 */
-	
-	
-	By toastContainer = By.xpath("//div[@class='toast-message']");
+
 	public void verifyProcessMasterSaved(String expectedMessage) {
 
 		Log.info("[verifyProcessMasterSaved] - Waiting for toast/message containing: " + expectedMessage);
@@ -471,6 +470,228 @@ public class ProcessMasterPage extends GenricMethod {
 			throw e;
 		}
 
+	}
+
+	public void enterProcessDetailInformation(String processName, String processRate, String dateSelection,
+			String efficiencyRate, String mcTonnage) {
+
+		Log.info("[enterProcessDetailInformation] - Starting to enter Process Detail information");
+
+		try {
+
+			clearAndEnterText(EnterProcessNameValue, processName);
+			Log.info("[enterProcessDetailInformation] - Entered process name: " + processName);
+
+			clearAndEnterText(EnterProcessRate, processRate);
+			Log.info("[enterProcessDetailInformation] - Entered process rate: " + processRate);
+
+			clearAndEnterText(dateselection, dateSelection);
+			Log.info("[enterProcessDetailInformation] - Entered date selection: " + dateSelection);
+
+			clearAndEnterText(EnterEfficiencyrate, efficiencyRate);
+			Log.info("[enterProcessDetailInformation] - Entered efficiency rate: " + efficiencyRate);
+
+			clearAndEnterText(Mctonnage, mcTonnage);
+			Log.info("[enterProcessDetailInformation] - Entered MC tonnage: " + mcTonnage);
+
+			Log.pass("[enterProcessDetailInformation] - Process detail information entered successfully");
+
+		} catch (Exception e) {
+			String ss = takeScreenShot("enterProcessDetailInformation_Error");
+			Log.fail("[enterProcessDetailInformation] - Exception while entering process detail: " + e.getMessage());
+			Log.info("Screenshot saved: " + ss);
+			throw e;
+		}
+	}
+
+	// Toast Message
+	private By genericToastMessage = By
+			.xpath("//div[contains(@class,'toast') or contains(@class,'alert') or @role='alert']");
+
+	public void verifyToastMessageContains(String expectedMessage) {
+
+		Log.info("[verifyToastMessageContains] - Verifying toast message: " + expectedMessage);
+
+		try {
+
+			WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+			WebElement toast = shortWait.until(ExpectedConditions.visibilityOfElementLocated(genericToastMessage));
+
+			String actualToast = toast.getText().trim();
+			Log.info("[verifyToastMessageContains] - Actual toast text: " + actualToast);
+
+			if (actualToast.contains(expectedMessage)) {
+				Log.pass("[verifyToastMessageContains] - Toast verified successfully");
+			} else {
+				String ss = takeScreenShot("verifyToastMessageContains_Mismatch");
+				Log.fail("[verifyToastMessageContains] - Expected: " + expectedMessage + " | Actual: " + actualToast);
+				Log.info("Screenshot saved: " + ss);
+				throw new AssertionError("Toast message mismatch");
+			}
+
+		} catch (Exception e) {
+			String ss = takeScreenShot("verifyToastMessageContains_Error");
+			Log.fail("[verifyToastMessageContains] - Exception while verifying toast: " + e.getMessage());
+			Log.info("Screenshot saved: " + ss);
+			throw e;
+		}
+	}
+
+	// Specific Applicability Customer Information
+
+	By EnterCustmerNameSearchBox = By.xpath("//div[@id='partAttributeDiv']//input[@id='myInputCustomer']");
+
+	public void enterSpecificApplicabilityCustomerInformation(String EnterCustmerName) {
+
+		Log.info("[enterSpecificApplicabilityCustomerInformation] - Starting specific applicability selection");
+
+		try {
+
+			clickOnElement(ClickingCavitiesCheckbox);
+			Log.info("[enterSpecificApplicabilityCustomerInformation] - Clicked Cavities checkbox");
+
+			clickOnElement(ohpnotapplicablecheckbox);
+			Log.info("[enterSpecificApplicabilityCustomerInformation] - Clicked OHP Not Applicable checkbox");
+
+			selectDropdonwnByValue(weightfactorDropdown, "byIndex", "1");
+			Log.info("[enterSpecificApplicabilityCustomerInformation] - Selected Weight Factor (index 1)");
+
+			clickOnElement(rmInputCheckboxAll);
+			Log.info("[enterSpecificApplicabilityCustomerInformation] - Clicked RM Input Checkbox (All)");
+
+			// 🔍 Search customer
+			clearAndEnterText(EnterCustmerNameSearchBox, EnterCustmerName);
+			Log.info("[enterSpecificApplicabilityCustomerInformation] - Searched customer: " + EnterCustmerName);
+
+			// ✅ Validate visible row and click checkbox
+			List<WebElement> rows = driver.findElements(By.xpath("//table[@id='rmCustomer']//tr"));
+			boolean customerFound = false;
+
+			for (WebElement row : rows) {
+
+				// Skip hidden rows (display:none)
+				if (!row.isDisplayed()) {
+					continue;
+				}
+
+				WebElement label = row.findElement(By.xpath(".//label"));
+				String actualCustomerName = label.getText().trim();
+
+				Log.info("[enterSpecificApplicabilityCustomerInformation] - Visible customer found: "
+						+ actualCustomerName);
+
+				if (actualCustomerName.equals(EnterCustmerName)) {
+
+					WebElement checkbox = row.findElement(By.xpath(".//input[@type='checkbox']"));
+
+					try {
+						checkbox.click();
+					} catch (Exception ex) {
+						((JavascriptExecutor) driver).executeScript("arguments[0].click();", checkbox);
+					}
+
+					Log.pass(
+							"[enterSpecificApplicabilityCustomerInformation] - Customer selected: " + EnterCustmerName);
+					customerFound = true;
+					break;
+				}
+			}
+
+			if (!customerFound) {
+				throw new AssertionError("Customer not found after search filter: " + EnterCustmerName);
+			}
+
+			clickOnElement(SaveBtn);
+
+		} catch (Exception e) {
+			String ss = takeScreenShot("enterSpecificApplicabilityCustomerInformation_Error");
+			Log.fail("[enterSpecificApplicabilityCustomerInformation] - Exception during applicability selection: "
+					+ e.getMessage());
+			Log.info("Screenshot saved: " + ss);
+			throw e;
+		}
+	}
+
+	// Toast container
+	private By toastContainer = By.id("toast-container");
+
+	// Warning toast message (actual text)
+	private By warningToastMessage = By.cssSelector("#toast-container .toast.toast-warning .toast-message");
+
+	public void verifyWarningToastMessage(String expectedMessage) {
+
+		Log.info("[verifyWarningToastMessage] - Verifying warning toast message: " + expectedMessage);
+
+		try {
+
+			WebElement toastMsg = waitForExpectedElement(warningToastMessage);
+			String actualMessage = toastMsg.getText().trim();
+
+			Log.info("Actual warning toast message: " + actualMessage);
+
+			if (actualMessage.equals(expectedMessage)) {
+				Log.pass("Warning toast verified successfully: " + actualMessage);
+			} else {
+				String ss = takeScreenShot("WarningToast_Mismatch");
+				Log.fail("Warning toast mismatch. Actual: " + actualMessage);
+				Log.info("Screenshot saved: " + ss);
+				throw new AssertionError("Warning toast text mismatch");
+			}
+
+		} catch (Exception e) {
+			String ss = takeScreenShot("WarningToast_Error");
+			Log.fail("Exception while verifying warning toast: " + e.getMessage());
+			Log.info("Screenshot saved: " + ss);
+			throw e;
+		}
+	}
+
+	public void enterProcessDetailInformationForVerifyingEfficiencyRatePopupMessage(String processName,
+			String processRate, String dateSelection, String efficiencyRate, String expectedMessage, String mcTonnage) {
+
+		Log.info("[EfficiencyValidation] - Starting efficiency validation flow");
+
+		try {
+
+			clearAndEnterText(EnterProcessNameValue, processName);
+			Log.info("Entered process name: " + processName);
+
+			clearAndEnterText(EnterProcessRate, processRate);
+			Log.info("Entered process rate: " + processRate);
+
+			selectDropdonwnByValue(unitDropDown, "visibleText", "Hrs.");
+			Log.info("Selected unit: Hrs.");
+
+			clearAndEnterText(dateselection, dateSelection);
+			Log.info("Entered date: " + dateSelection);
+
+			// ❌ Enter invalid efficiency (>100)
+			clearAndEnterText(EnterEfficiencyrate, efficiencyRate);
+			Log.info("Entered efficiency rate: " + efficiencyRate);
+
+			// ✅ Validate toast message
+			WebElement toast = waitForExpectedElement(warningToastMessage);
+			String actualMessage = toast.getText().trim();
+
+			if (actualMessage.contains(expectedMessage)) {
+				Log.pass("Warning toast verified successfully: " + actualMessage);
+			} else {
+				String ss = takeScreenShot("EfficiencyToast_Mismatch");
+				Log.fail("Toast mismatch. Actual: " + actualMessage);
+				Log.info("Screenshot saved: " + ss);
+				throw new AssertionError("Expected toast not found. Actual: " + actualMessage);
+			}
+
+			clearAndEnterText(Mctonnage, mcTonnage);
+			Log.info("Entered MC tonnage: " + mcTonnage);
+
+		} catch (Exception e) {
+			String ss = takeScreenShot("EfficiencyToast_Error");
+			Log.fail("Exception during efficiency validation: " + e.getMessage());
+			Log.info("Screenshot saved: " + ss);
+			throw e;
+		}
 	}
 
 }
