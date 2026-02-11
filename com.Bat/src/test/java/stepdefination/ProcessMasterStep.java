@@ -104,7 +104,7 @@ public class ProcessMasterStep {
     @Given("user enter specific applicability customer information")
     public void user_enter_specific_applicability_customer_information() {
 
-        String customerName = gen.process.getProperty("CustomerName");
+        String customerName = GenricMethod.process.getProperty("CustomerName");
         ppage.enterSpecificApplicabilityCustomerInformation(customerName);
     }
 
